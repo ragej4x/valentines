@@ -10,6 +10,18 @@ cursor = pg.image.load("data/cursor.png")
 #++++
 class main_class():
     def __init__(self) -> None:
+
+        self.sad_diag = [
+
+            "Are you sure?",
+            "weh",
+            "nop",
+            ":<",
+            "Di mo'ko lab?",
+            "",
+        ]
+
+
         self.button_image = pg.image.load("data/button.png")
         self.btn1_x = window.get_width()//3
         self.btn1_y = window.get_height()//1.5
@@ -29,6 +41,10 @@ class main_class():
 
         self.res = 2
 
+
+        #particle
+        self.particle = []
+
         for num in range(1, 4):
             self.love_image = pg.image.load(f"data/anim/love_frame ({num}).png")
             self.love_image = pg.transform.scale(self.love_image, (self.love_image.get_width()// 3 ,self.love_image.get_height()//3))
@@ -39,9 +55,21 @@ class main_class():
             self.sad_image = pg.transform.scale(self.sad_image, (self.sad_image.get_width()//self.res,self.sad_image.get_height()//self.res))
             self.sad_list.append(self.sad_image)
 
-
-
     def update(self):
+        def particle_effects():
+            if mc[0]:
+                self.particle.append([mp[0], mp[1], random.randint(2,8)])
+            for particle in self.particle:
+                pg.draw.circle(window, (random.randint(50,200),random.randint(50,200),random.randint(50,200)), (particle[0], particle[1]),particle[2])
+                
+                particle[2] -= 0.1
+                particle[1] += particle[2]
+                if particle[2] < 0:
+                    self.particle.remove(particle)
+
+                    
+
+
         self.love_image_rect = self.love_image.get_rect(x=(430),y=(100))
         self.sad_image_rect = self.sad_image.get_rect(x=(430),y=(100))
 
@@ -85,6 +113,7 @@ class main_class():
             self.love = False
             self.btn2_x = random.randint(0,window.get_width() - 100)
             self.btn2_y = random.randint(0,window.get_height() - 100)
+            
 
         if self.mouse_rect.colliderect(self.button_yes):
             self.love = True
@@ -100,7 +129,13 @@ class main_class():
 
         if self.sad == True:
             animate_sad()
+        
+
             
+
+
+        particle_effects()
+        print(clock.get_fps())
 
 main = main_class()
 

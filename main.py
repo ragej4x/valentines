@@ -52,11 +52,12 @@ async def main_loop():
                 "Sure pa sa sure????",
                 "Ayaw mo ?",
                 "Di mo talaga ako lab?",
-                "Are you sure?",
+                "HEHE ano na",
             ]
 
 
-
+            self.iloveyou_image = pg.image.load("data/iloveyou.png")
+            self.kiss_image = pg.image.load("data/kiss.png")
             self.button_image = pg.image.load("data/button.png")
             self.yes_btn_image = pg.image.load("data/yes_btn.png")
             self.diag_box = pg.image.load("data/diag_box.png")
@@ -79,6 +80,7 @@ async def main_loop():
             self.love = True
             self.sad = False
 
+            self.end_partics = []
 
             self.res = 2
 
@@ -88,6 +90,7 @@ async def main_loop():
 
             #particle
             self.particle = []
+    
 
             for num in range(1, 4):
                 self.love_image = pg.image.load(f"data/anim/love_frame ({num}).png")
@@ -106,12 +109,20 @@ async def main_loop():
                 pg.mixer.Sound("data/sfx/click.wav"),
                 pg.mixer.Sound("data/sfx/love.wav"),
                 pg.mixer.Sound("data/sfx/sad.wav"),
+                pg.mixer.Sound("data/sfx/bg_music.mp3"),
+                pg.mixer.Sound("data/sfx/piano.mp3"),
                 ]
-        
+            
+            #BTN
+            self.keypress = []
+
+            self.she_said_yes_boiz = False
+
             for num in range(1,3):
                 self.sfx_file[num].set_volume(self.vol)
             
         def update(self):
+            
             def health_death_sys():
                 cstm_dhs = ["AGAY","ARUY","SAKIT"]
                 font = pg.font.Font("data/pricedown bl.ttf", 50)
@@ -169,6 +180,7 @@ async def main_loop():
                     
                 #print(self.love_frame)
 
+            
             def animate_sad():
 
                 window.blit(self.sad_list[int(self.sad_frame)], (430,100))
@@ -177,37 +189,38 @@ async def main_loop():
                 if self.sad_frame > 15:
                     self.sad_frame = 0
 
-            self.button_yes = pg.Rect((self.btn1_x, self.btn1_y, self.get_big_int[0], self.get_big_int[1]))
-
-            self.button_no = self.button_image.get_rect(topleft=(self.btn2_x,self.btn2_y))
-
-            self.mouse_rect = cursor.get_rect(x=(mp[0]),y=(mp[1]))
-
-
             
-            if self.mouse_rect.colliderect(self.button_no) and pg.event.get(pg.MOUSEBUTTONDOWN):
-                self.sad = True
-                self.love = False
-                self.btn2_x = random.randint(0,window.get_width() - 100)
-                self.btn2_y = random.randint(0,window.get_height() - 100)
+            if self.she_said_yes_boiz == False:
+
+                self.button_yes = pg.Rect((self.btn1_x, self.btn1_y, self.get_big_int[0], self.get_big_int[1]))
+
+                self.button_no = self.button_image.get_rect(topleft=(self.btn2_x,self.btn2_y))
+
+                self.mouse_rect = cursor.get_rect(x=(mp[0]),y=(mp[1]))
                 
-                self.get_big_int[0] += 30
-                self.get_big_int[1] += 20
-                self.button_yes
-                self.btn1_x -= 15
-                self.btn1_y -= 15
-                self.rnd += 1
-                self.sfx_file[3].play()
+                if self.mouse_rect.colliderect(self.button_no) and pg.event.get(pg.MOUSEBUTTONDOWN):
+                    self.sad = True
+                    self.love = False
+                    self.btn2_x = random.randint(0,window.get_width() - 100)
+                    self.btn2_y = random.randint(0,window.get_height() - 100)
+                    
+                    self.get_big_int[0] += 30
+                    self.get_big_int[1] += 20
+                    self.button_yes
+                    self.btn1_x -= 15
+                    self.btn1_y -= 15
+                    self.rnd += 1
+                    self.sfx_file[3].play()
 
 
-            self.get_big = pg.transform.scale(self.yes_btn_image, (self.get_big_int[0],self.get_big_int[1]))
+                self.get_big = pg.transform.scale(self.yes_btn_image, (self.get_big_int[0],self.get_big_int[1]))
 
-            window.blit(self.get_big,(self.button_yes.x , self.button_yes.y))
-            #window.blit(yes,(self.btn1_x + 15,self.btn1_y))
+                window.blit(self.get_big,(self.button_yes.x , self.button_yes.y))
+                #window.blit(yes,(self.btn1_x + 15,self.btn1_y))
 
-            window.blit(self.button_image,(self.button_no.x , self.button_no.y))
-            window.blit(no,(self.btn2_x + 20,self.btn2_y))
-            #SMOOTHSCROLL
+                window.blit(self.button_image,(self.button_no.x , self.button_no.y))
+                window.blit(no,(self.btn2_x + 20,self.btn2_y))
+                #SMOOTHSCROLL
 
             """
             if self.mouse_rect.colliderect(self.button_no) and mc[0] == True:
@@ -228,6 +241,8 @@ async def main_loop():
             print(self.move, self.btn2_x)
             """
 
+            keys = pg.key.get_pressed()
+
             if self.mouse_rect.colliderect(self.button_yes):
                 self.love = True
                 self.sad = False
@@ -235,8 +250,61 @@ async def main_loop():
 
                     self.sfx_file[2].play()
 
-            if pg.event.get(pg.MOUSEBUTTONDOWN):
+                    #YESWWOAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 
+                    self.she_said_yes_boiz = True
+
+            msg = "Dear Bebeloves ko na love na love kong prinsesa, \n\n  Happy valentines day po mahal ko i love youu always \n\n  and di mag fefade ang lab ko sayo, \n\n  Thank you for being mine <3      \n \n \n \n \n                                               From Jimboiled :>"
+            if self.she_said_yes_boiz == True:
+
+                font = pg.font.Font("data/font.ttf", 40)
+                text = font.render(msg, True, (200,30,30))
+
+                self.sfx_file[5].play()
+
+                self.end_partics.append([random.randint(0, 1024), 0, 0])
+                              
+                for end_part in self.end_partics:
+                    icon.set_alpha(100)
+                    lrot = pg.transform.rotate(icon, (end_part[2]))
+
+                    window.blit(lrot, ( end_part[0], end_part[1]))
+                    end_part[1] += 3
+                    end_part[2] += 1
+                    
+                    if end_part[2] > 620:
+                        self.end_partics.remove(end_part)
+
+                window.blit(text, (100,100))
+
+                if self.love == True:
+                    pass
+
+                if pg.event.get(pg.K_0):
+                    self.keypress.append([0])
+                    print("a")
+                if pg.event.get(pg.K_1):
+                    self.keypress.append([1])
+                if pg.event.get(pg.K_2):
+                    self.keypress.append([3])
+                if pg.event.get(pg.K_3):
+                    self.keypress.append([3])
+                if pg.event.get(pg.K_4):
+                    self.keypress.append([4])
+                if pg.event.get(pg.K_5):
+                    self.keypress.append([5])
+                if pg.event.get(pg.K_6):
+                    self.keypress.append([6])
+                if pg.event.get(pg.K_7):
+                    self.keypress.append([7])
+                if pg.event.get(pg.K_8):
+                    self.keypress.append([8])
+                if pg.event.get(pg.K_9):
+                    self.keypress.append([9])
+
+
+            
+            if pg.event.get(pg.MOUSEBUTTONDOWN):
                 self.sfx_file[1].play()
 
             if self.love_image_rect.colliderect(self.button_no) or self.button_yes.colliderect(self.button_no) or self.diag_box.get_rect(x=330, y=10, width=self.diag_box.get_width(), height=self.diag_box.get_height()).colliderect(self.button_no) or self.diag_box_long.get_rect(x=330, y=10, width=self.diag_box_long.get_width(), height=self.diag_box_long.get_height()).colliderect(self.button_no):
@@ -244,10 +312,10 @@ async def main_loop():
                 self.btn2_y = random.randint(0,window.get_height() - 80)
                 
 
-            if self.love == True:
+            if self.love == True and self.she_said_yes_boiz == False:
                 animate_love()
 
-            if self.sad == True:
+            if self.sad == True and self.she_said_yes_boiz == False:
                 animate_sad()
             
 
@@ -279,13 +347,14 @@ async def main_loop():
                     window.blit(sad_diag, (360,30))
             
             
-            update_diag()
-            health_death_sys()
+            if self.she_said_yes_boiz == False:
+                update_diag()
+                health_death_sys()
             particle_effects()
-            
+                
 
-            #print(clock.get_fps())
-           
+                #print(clock.get_fps())
+            
 
     main = main_class()
 
@@ -299,7 +368,7 @@ async def main_loop():
         pg.display.flip()
         clock.tick(60)
         
-
+    #main.sfx_file[4].play()
     #global window , clock, cursor, main,  mp, mc
 
     while True:
@@ -311,8 +380,13 @@ async def main_loop():
         #CALL
         #main.animate_love()
         main.update()
+
+
         window.blit(cursor,(mp[0],mp[1]))
         event_handler()
+
+
+
 
         await asyncio.sleep(0)
 asyncio.run(main_loop())
